@@ -1,5 +1,4 @@
-[
-  {
+ [{
   "id": 1,
   "name": "John",
   "classroomId": 75
@@ -38,5 +37,4 @@
     "id": 8,
     "name": "Miron",
     "classroomId": 41
-  }
-]
+  }]
