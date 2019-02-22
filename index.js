@@ -3,7 +3,7 @@ const app = express();
 const fs = require('fs');
 const students = JSON.parse(fs.readFileSync('students.json', 'utf-8'));
 const courses = JSON.parse(fs.readFileSync('courses.json', 'utf-8'));
-const evaluation = fs.readFileSync('evaluation.json', 'utf-8');
+const evaluation = JSON.parse(fs.readFileSync('evaluation.json', 'utf-8'));
 
 app.get('/api/students', (req, res) => {
     res.send(students);
@@ -20,7 +20,12 @@ app.get('/api/classes/performance/:classroomId', (req, res) => {
     if (!performance) res.status(404).send('The class with given ID was not found');
     res.send(performance);
 });
-
+app.get('/api/evaluation/history/:studentId', (req, res) => {
+    const evaluationOfStudent = evaluation.filter(evaluation => evaluation.studentId === parseInt(req.params.studentId));
+   if (!evaluationOfStudent) res.status(404).send('The evaluation of student with given ID was not found');
+   evaluationOfStudent.map(eval => delete eval.studentId);
+   res.send(evaluationOfStudent)
+});
 function getStudentsAverageMarkByClassroom() {
 
 }
