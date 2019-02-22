@@ -1,0 +1,42 @@
+[
+  {
+  "id": 1,
+  "name": "John",
+  "classroomId": 75
+  },
+  {
+    "id": 2,
+    "name": "Alex",
+    "classroomId": 75
+  },
+  {
+    "id": 3,
+    "name": "Andrei",
+    "classroomId": 75
+  },
+  {
+    "id":4,
+    "name": "Sergei",
+    "classroomId": 68
+  },
+  {
+    "id": 5,
+    "name": "James",
+    "classroomId": 68
+  },
+  {
+    "id": 6,
+    "name": "Ann",
+    "classroomId": 68
+  },
+  {
+    "id": 7,
+    "name": "Marina",
+    "classroomId": 41
+  },
+  {
+    "id": 8,
+    "name": "Miron",
+    "classroomId": 41
+  }
+]

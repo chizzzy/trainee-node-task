@@ -1,0 +1,51 @@
+[{
+  "id": "history",
+  "studentId": 1
+}, {
+  "id": "algebra",
+  "studentId": 1
+},
+  {
+    "id": "biology",
+    "studentId": 2
+  }, {
+  "id": "algebra",
+  "studentId": 3
+},
+  {
+    "id": "programming",
+    "studentId": 4
+  }, {
+  "id": "geography",
+  "studentId": 4
+},
+  {
+    "id": "history",
+    "studentId": 5
+  }, {
+  "id": "physics",
+  "studentId": 6
+},
+  {
+    "id": "chemistry",
+    "studentId": 6
+  },
+  {
+    "id": "programming",
+    "studentId": 7
+  },
+  {
+    "id": "english",
+    "studentId": 7
+  },
+  {
+  "id": "physics",
+  "studentId": 7
+},{
+  "id": "biology",
+  "studentId": 8
+}, {
+  "id": "physics",
+  "studentId": 8
+}
+]
