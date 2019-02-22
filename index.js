@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const fs = require('fs');
-const students = fs.readFileSync('students.json', 'utf-8');
+const students = JSON.parse(fs.readFileSync('students.json', 'utf-8'));
 const courses = JSON.parse(fs.readFileSync('courses.json', 'utf-8'));
 const evaluation = fs.readFileSync('evaluation.json', 'utf-8');
 
@@ -14,7 +14,16 @@ app.get('/api/courses/:id', (req, res) => {
         res.send(studentCourses);
     });
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
 
+app.get('/api/classes/performance/:classroomId', (req, res) => {
+    const performance = students.filter(student => student.classroomId === parseInt(req.params.classroomId));
+    if (!performance) res.status(404).send('The class with given ID was not found');
+    res.send(performance);
+});
+
+function getStudentsAverageMarkByClassroom() {
+
+}
+app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
