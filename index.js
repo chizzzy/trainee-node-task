@@ -26,7 +26,7 @@ app.listen(3000, () => {
 });
 
 // REQUIRED FUNCTION USING PROMISES
-function getStudentsAverageMarkByClassroom(classroomId) {
+function getStudentsAverageMarkWithPromises(classroomId) {
     return new Promise((resolve, reject) => {
         let studentsScore = new Map();
         let allPromises = [];
@@ -34,6 +34,12 @@ function getStudentsAverageMarkByClassroom(classroomId) {
         axios.get(`http://localhost:3000/api/students`)
             .then(response => {
                 let students = response.data.filter(student => student['classroomId'] === classroomId);
+                if (typeof classroomId === "undefined") {
+                    reject('You did not input anything!')
+                }
+                if (typeof classroomId !== "number") {
+                    reject(`Classroom ID should be number`)
+                }
                 if (students.length === 0) {
                     reject(`Unfortunately, classroom with id ${classroomId} does not exist`)
                 }
@@ -42,7 +48,7 @@ function getStudentsAverageMarkByClassroom(classroomId) {
             for (let i = 0; i < students.length; i++) {
                 let promise = new Promise(resolve => {
                     axios.get(`http://localhost:3000/api/evaluation/history/${students[i].id}`).then(
-                        (eval) => {
+                        eval => {
                             studentsScore.set(students[i].id, eval.data);
                             resolve();
                         }
@@ -79,10 +85,41 @@ function getStudentsAverageMarkByClassroom(classroomId) {
     })
 }
 
-getStudentsAverageMarkByClassroom(75).then(
-    (result => console.log(result)),
-    error => {
-        console.log(error)
-    });
-
 //REQUIRED FUNCTION USING ASYNC/AWAIT
+async function getStudentsAverageMarkWithAsync (classroomId) {
+    let studentsScore = new Map();
+    let studAverage = [];
+    let studentsData = await axios.get(`http://localhost:3000/api/students`);
+    let requiredStudents = await studentsData.data.filter(student => student['classroomId'] === classroomId);
+    for (const student of requiredStudents) {
+          const studentEvaluation = await axios.get(`http://localhost:3000/api/evaluation/history/${student.id}\``);
+          studentsScore.set(student.id, studentEvaluation.data);
+    }
+    studentsScore.forEach(async (student, studentId) => {
+        let currentStudent = students.find(student => student.id === studentId);
+        let averageMark = 0;
+        if (student.length > 1) {
+            student.forEach(async (course) => {
+                averageMark += course.score / student.length;
+            });
+            studAverage.push({
+                id: studentId,
+                name: currentStudent.name,
+                average: averageMark,
+            })
+        } else {
+            let averageMark = studentsScore.get(studentId)[0].score;
+            studAverage.push({
+                id: studentId,
+                name: currentStudent.name,
+                average: averageMark
+            })
+        }
+});
+    return studAverage
+}
+
+
+getStudentsAverageMarkWithAsync(68).then(
+    (result) => console.log(result)
+)
