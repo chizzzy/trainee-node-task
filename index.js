@@ -28,18 +28,19 @@ app.listen(3000, () => {
 // REQUIRED FUNCTION USING PROMISES
 function getStudentsAverageMarkWithPromises(classroomId) {
     return new Promise((resolve, reject) => {
+        if (typeof classroomId === "undefined") {
+            reject('You did not input anything')
+        }
+        if (typeof classroomId !== "number") {
+            reject(`Classroom ID should be number`)
+        }
         let studentsScore = new Map();
         let allPromises = [];
         let studAverage = [];
         axios.get(`http://localhost:3000/api/students`)
             .then(response => {
                 let students = response.data.filter(student => student['classroomId'] === classroomId);
-                if (typeof classroomId === "undefined") {
-                    reject('You did not input anything!')
-                }
-                if (typeof classroomId !== "number") {
-                    reject(`Classroom ID should be number`)
-                }
+
                 if (students.length === 0) {
                     reject(`Unfortunately, classroom with id ${classroomId} does not exist`)
                 }
@@ -87,10 +88,26 @@ function getStudentsAverageMarkWithPromises(classroomId) {
 
 //REQUIRED FUNCTION USING ASYNC/AWAIT
 async function getStudentsAverageMarkWithAsync (classroomId) {
-    let studentsScore = new Map();
+    if (typeof classroomId === "undefined") {
+        throw new Error('You did not input anything')
+    }
+    if (typeof classroomId !== "number") {
+        throw new Error(`Classroom ID should be number`)
+    }
+    const studentsScore = new Map();
+    let studentsData;
     let studAverage = [];
-    let studentsData = await axios.get(`http://localhost:3000/api/students`);
-    let requiredStudents = await studentsData.data.filter(student => student['classroomId'] === classroomId);
+    let requiredStudents;
+    try {
+        studentsData = await axios.get(`http://localhost:3000/api/students`);
+    } catch (e) {
+        throw new Error('Не удалось получить данные с сервера')
+    }
+    requiredStudents = await studentsData.data.filter(student => student['classroomId'] === classroomId);
+
+    if (requiredStudents.length === 0) {
+        throw new Error(`Unfortunately, classroom with id ${classroomId} does not exist`)
+    }
     for (const student of requiredStudents) {
           const studentEvaluation = await axios.get(`http://localhost:3000/api/evaluation/history/${student.id}\``);
           studentsScore.set(student.id, studentEvaluation.data);
@@ -120,6 +137,7 @@ async function getStudentsAverageMarkWithAsync (classroomId) {
 }
 
 
-getStudentsAverageMarkWithAsync(68).then(
-    (result) => console.log(result)
-)
+getStudentsAverageMarkWithAsync().then(
+    result => console.log(result),
+    error => console.log(error)
+);
