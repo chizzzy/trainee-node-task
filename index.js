@@ -33,52 +33,53 @@ app.listen(3000, () => {
 
 
 function getStudentsAverageMarkByClassroom(classroomId) {
-    let students = [];
-    let studentsScore = new Map();
-    let allPromises = [];
-    let studAverage = [];
-    axios.get(`http://localhost:3000/api/students`)
-        .then(response => {
-            return students = response.data.filter(student => student['classroomId'] === classroomId);
-        }).then(students => {
-        for (let i = 0; i < students.length; i++) {
-            let promise = new Promise(resolve => {
-                axios.get(`http://localhost:3000/api/evaluation/history/${students[i].id}`).then(
-                    (eval) => {
-                        studentsScore.set(students[i].id, eval.data);
-                        resolve();
-                    }
-                )
-            });
-            allPromises.push(promise);
-        }
-    }).then(() => {
-        Promise.all(allPromises).then(() => {
-            studentsScore.forEach((student, studentId) => {
-                let currentStudent = students.find(student => student.id === studentId);
-                let averageMark = 0;
-                if (student.length > 1) {
-                    student.forEach((course) => {
-                        averageMark += course.score / student.length;
-                    });
-                    studAverage.push({
-                        id: studentId,
-                        name: currentStudent.name,
-                        average: averageMark,
-                    })
-                } else {
-                    let averageMark = studentsScore.get(studentId)[0].score;
-                    studAverage.push({
-                        id: studentId,
-                        name: currentStudent.name,
-                        average: averageMark
-                    })
-                }
-            })
-        }).then(() => console.log(studAverage))
-    })
+       return new Promise(resolve => {
+           let students = [];
+           let studentsScore = new Map();
+           let allPromises = [];
+           let studAverage = [];
+           axios.get(`http://localhost:3000/api/students`)
+               .then(response => {
+                   return students = response.data.filter(student => student['classroomId'] === classroomId);
+               }).then(students => {
+               for (let i = 0; i < students.length; i++) {
+                   let promise = new Promise(resolve => {
+                       axios.get(`http://localhost:3000/api/evaluation/history/${students[i].id}`).then(
+                           (eval) => {
+                               studentsScore.set(students[i].id, eval.data);
+                               resolve();
+                           }
+                       )
+                   });
+                   allPromises.push(promise);
+               }
+           }).then(() => {
+               return Promise.all(allPromises).then(() => {
+                   studentsScore.forEach((student, studentId) => {
+                       let currentStudent = students.find(student => student.id === studentId);
+                       let averageMark = 0;
+                       if (student.length > 1) {
+                           student.forEach((course) => {
+                               averageMark += course.score / student.length;
+                           });
+                           studAverage.push({
+                               id: studentId,
+                               name: currentStudent.name,
+                               average: averageMark,
+                           })
+                       } else {
+                           let averageMark = studentsScore.get(studentId)[0].score;
+                           studAverage.push({
+                               id: studentId,
+                               name: currentStudent.name,
+                               average: averageMark
+                           })
+                       }
+                   })
+               }).then(() => resolve(studAverage))
+           })
+       })
 }
-
-
-console.log(getStudentsAverageMarkByClassroom(75));
-
+getStudentsAverageMarkByClassroom(75).then(
+    result => console.log(result)
+);
