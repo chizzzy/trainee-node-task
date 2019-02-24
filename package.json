@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "latest",
     "express": "^4.16.4",
-    "axios": "latest"
+    "request": "^2.88.0"
   }
 }
