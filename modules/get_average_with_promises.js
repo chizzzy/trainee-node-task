@@ -1,5 +1,4 @@
 const axios = require('axios');
-const fs = require('fs');
 // REQUIRED FUNCTION USING PROMISES
 module.exports = {
     async getStudentsAverageMark(classroomId) {
