@@ -1,26 +1,23 @@
 const request = require('request');
-
+//REQUIRED FUNCTION USING CALLBACKS
 module.exports = {
-    getStudentsEvaluation(requiredStudents, callback) {
-        const studentsScore = new Map();
-        let itemProcessed = 0;
-        requiredStudents.forEach(student => {
-            module.exports.sendRequestToStudentsEvaluation(student, (body) => {
-                studentsScore.set(student.id, body);
-                itemProcessed++;
-                if (itemProcessed === requiredStudents.length) {
-                    callback(studentsScore)
-                }
-            })
-        })
-    },
+
     getStudentsAverageMark(classroomId) {
+        if (typeof classroomId === "undefined") {
+            throw new Error('You did not input anything')
+        }
+        if (typeof classroomId !== "number") {
+            throw new Error(`Classroom ID should be number`)
+        }
         let studAverage = [];
         request('http://localhost:3000/api/students', {json: true}, (err, res, body) => {
             if (err) {
                 return console.log(err);
             }
             const requiredStudents = body.filter(student => student['classroomId'] === classroomId);
+            if (requiredStudents.length === 0) {
+                throw new Error(`Unfortunately, classroom with id ${classroomId} does not exist`)
+            }
             module.exports.getStudentsEvaluation(requiredStudents, eval => {
                 eval.forEach((student, studentId) => {
                     let currentStudent = requiredStudents.find(student => student.id === studentId);
@@ -46,6 +43,19 @@ module.exports = {
                 });
                 console.log(studAverage);
             });
+        })
+    },
+    getStudentsEvaluation(requiredStudents, callback) {
+        const studentsScore = new Map();
+        let itemProcessed = 0;
+        requiredStudents.forEach(student => {
+            module.exports.sendRequestToStudentsEvaluation(student, (body) => {
+                studentsScore.set(student.id, body);
+                itemProcessed++;
+                if (itemProcessed === requiredStudents.length) {
+                    callback(studentsScore)
+                }
+            })
         })
     },
     sendRequestToStudentsEvaluation(student, callback) {

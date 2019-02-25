@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const rxjs = require('rxjs');
 const request = require('request');
 const fs = require('fs');
 //REQUIRED FUNCTIONS
@@ -45,7 +46,9 @@ app.listen(3000, () => {
 //     result => console.log(result),
 //             error => console.error(error)
 // );
-// getAverageWithAsync.getStudentsAverageMark(68).then(
+// getAverageWithAsync.getStudentsAverageMark(75).then(
 //     result => console.log(result),
 //     error => console.error(error));
-getAverageWithCallbacks.getStudentsAverageMark(68);
+// getAverageWithCallbacks.getStudentsAverageMark(68);
+
+

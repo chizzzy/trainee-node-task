@@ -20,7 +20,7 @@ module.exports = {
         requiredStudents = await studentsData.data.filter(student => student['classroomId'] === classroomId);
 
         if (requiredStudents.length === 0) {
-            throw new Error(`Unfortunately, classroom with id ${classroomId} does not exist`)
+            throw(`Unfortunately, classroom with id ${classroomId} does not exist`)
         }
         for (const student of requiredStudents) {
             const studentEvaluation = await axios.get(`http://localhost:3000/api/evaluation/history/${student.id}\``);
