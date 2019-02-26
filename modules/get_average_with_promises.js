@@ -28,7 +28,7 @@ module.exports = {
                                 studentsScore.set(students[i].id, eval.data);
                                 resolve();
                             }
-                        )
+                        ).catch(err => console.error(err))
                     });
                     allPromises.push(promise);
                 }
@@ -56,8 +56,7 @@ module.exports = {
                         }
                     })
                 }).then(() => resolve(studAverage))
-                    .catch((err) => console.error(err))
-            })
+            }).catch(err => console.error(err))
         })
     }
 };
