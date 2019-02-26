@@ -25,7 +25,14 @@ describe('getAverage function that uses promises', () => {
                 {id: 2, name: 'Alex', average: 58},
                 {id: 3, name: 'Andrei', average: 89}]
         )
-
+    });
+    it('should return [{id: 7, name: \'Marina\', average: 68},' +
+    '{id: 8, name: \'Miron\', average: 62.5}]', async () => {
+        const result = await getAverage(41);
+        assert.deepEqual(result,
+            [{id: 7, name: 'Marina', average: 68},
+                {id: 8, name: 'Miron', average: 62.5}]
+        )
     });
     it('should throw error "You did not input anything"', async () => {
         await expect(getAverage()).to.be.rejectedWith('You did not input anything')
@@ -37,6 +44,6 @@ describe('getAverage function that uses promises', () => {
         await expect(getAverage('string')).to.be.rejectedWith('Classroom ID should be number')
     });
     it('should throw error "Classroom ID should be number"', async () => {
-        await expect(getAverage(null)).to.be.rejectedWith('Classroom ID should be number')
+        await expect(getAverage(true)).to.be.rejectedWith('Classroom ID should be number')
     });
 });

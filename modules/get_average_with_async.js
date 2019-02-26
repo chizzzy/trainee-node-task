@@ -6,7 +6,7 @@ module.exports = {
             throw new Error('You did not input anything')
         }
         if (typeof classroomId !== "number") {
-            throw new Error(`Classroom ID should be number`)
+            throw TypeError(`Classroom ID should be number`)
         }
         const studentsScore = new Map();
         let studentsData;

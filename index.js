@@ -48,16 +48,13 @@ app.listen(3000, () => {
     console.log('Server running on port 3000');
 });
 
-getAverageWithAsync.getStudentsAverageMark(75).then(
-    result => console.log(result),
-    error => console.log(error)
-);
-getAverageWithPromises.getStudentsAverageMark(75).then(
-    result => console.log(result),
-    error => console.log(error)
-);
-getAverageWithPromises.getStudentsAverageMark(75).then(
-    result => console.log(result),
-    error => console.error(error)
-);
+// getAverageWithAsync.getStudentsAverageMark(75).then(
+//     result => console.log(result),
+//     error => console.log(error)
+// );
+// getAverageWithPromises.getStudentsAverageMark(75).then(
+//     result => console.log(result),
+//     error => console.error(error)
+// );
+getAverageWithCallbacks.getStudentsAverageMark(41, res => console.log(res));
 
