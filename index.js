@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const rxjs = require('rxjs');
 const request = require('request');
 const fs = require('fs');
 //REQUIRED FUNCTIONS
@@ -10,9 +9,9 @@ const getAverageWithCallbacks = require('./modules/get_average_with_callbacks');
 
 
 function readData() {
-    const students = JSON.parse(fs.readFileSync('students.json', 'utf-8'));
-    const courses = JSON.parse(fs.readFileSync('courses.json', 'utf-8'));
-    const evaluation = JSON.parse(fs.readFileSync('evaluation.json', 'utf-8'));
+    const students = JSON.parse(fs.readFileSync('./data/students.json', 'utf-8'));
+    const courses = JSON.parse(fs.readFileSync('./data/courses.json', 'utf-8'));
+    const evaluation = JSON.parse(fs.readFileSync('./data/evaluation.json', 'utf-8'));
     return {
         students: students,
         courses: courses,
@@ -56,5 +55,5 @@ app.listen(3000, () => {
 //     result => console.log(result),
 //     error => console.error(error)
 // );
-getAverageWithCallbacks.getStudentsAverageMark(41, res => console.log(res));
+// getAverageWithCallbacks.getStudentsAverageMark(41, res => console.log(res));
 

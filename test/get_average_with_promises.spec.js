@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const chai = require('chai')
+const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const expect = chai.expect;
 chai.use(chaiAsPromised);

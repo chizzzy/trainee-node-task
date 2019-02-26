@@ -1,8 +1,5 @@
 const assert = require('chai').assert;
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised');
-const expect = chai.expect;
-chai.use(chaiAsPromised);
+const expect = require('chai').expect;
 let getAverage = require('../modules/get_average_with_callbacks').getStudentsAverageMark;
 
 describe('getAverage function that uses callbacks', () => {
