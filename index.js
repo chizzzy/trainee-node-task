@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-const request = require('request');
 const fs = require('fs');
 //REQUIRED FUNCTIONS
+//Available classroomIds: 68, 75, 41
 const getAverageWithPromises = require('./modules/get_average_with_promises');
 const getAverageWithAsync = require('./modules/get_average_with_async');
 const getAverageWithCallbacks = require('./modules/get_average_with_callbacks');
@@ -51,9 +51,9 @@ app.listen(3000, () => {
 //     result => console.log(result),
 //     error => console.log(error)
 // );
-// getAverageWithPromises.getStudentsAverageMark(75).then(
+// getAverageWithPromises.getStudentsAverageMark(68).then(
 //     result => console.log(result),
 //     error => console.error(error)
 // );
-// getAverageWithCallbacks.getStudentsAverageMark(41, res => console.log(res));
+// getAverageWithCallbacks.getStudentsAverageMark(68, res => console.log(res));
 

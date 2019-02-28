@@ -1,14 +1,19 @@
 const request = require('request');
-//REQUIRED FUNCTION USING CALLBACKS
 module.exports = {
-
-    getStudentsAverageMark(classroomId, callback) {
+    validateClassroomId(classroomId) {
         if (typeof classroomId === "undefined") {
             throw new Error('You did not input anything')
         }
         if (typeof classroomId !== "number") {
             throw TypeError('Classroom ID should be number')
         }
+    },
+    /**
+     * Callback based function that validate provided classroomId,
+     * fetches students data for that classroom and calculates average students score
+     */
+    getStudentsAverageMark(classroomId, callback) {
+        module.exports.validateClassroomId(classroomId);
         let studAverage = [];
         request('http://localhost:3000/api/students', {json: true}, (err, res, body) => {
             if (err) {

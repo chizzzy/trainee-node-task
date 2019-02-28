@@ -1,22 +1,15 @@
 const axios = require('axios');
-//REQUIRED FUNCTION USING ASYNC/AWAIT
+
 module.exports = {
+    /**
+     * Async-await based function that validate provided classroomId,
+     * fetches students data for that classroom and calculates average students score
+     */
     async getStudentsAverageMark(classroomId) {
-        if (typeof classroomId === "undefined") {
-            throw new Error('You did not input anything')
-        }
-        if (typeof classroomId !== "number") {
-            throw TypeError(`Classroom ID should be number`)
-        }
+        module.exports.validateClassroomId(classroomId);
         const studentsScore = new Map();
-        let studentsData;
-        let studAverage = [];
         let requiredStudents;
-        try {
-            studentsData = await axios.get(`http://localhost:3000/api/students`);
-        } catch (e) {
-            throw new Error('Не удалось получить данные с сервера')
-        }
+        const studentsData = await module.exports.fetchData();
         requiredStudents = await studentsData.data.filter(student => student['classroomId'] === classroomId);
         if (requiredStudents.length === 0) {
             throw(`Unfortunately, classroom with id ${classroomId} does not exist`)
@@ -26,31 +19,49 @@ module.exports = {
             studentsScore.set(student.id, studentEvaluation.data);
         }
         try {
-            studentsScore.forEach(async (student, studentId) => {
-                let currentStudent = requiredStudents.find(student => student.id === studentId);
-                let averageMark = 0;
-                if (student.length > 1) {
-                    student.forEach(course => {
-                        averageMark += course.score / student.length;
-                    });
-                    studAverage.push({
-                        id: studentId,
-                        name: currentStudent.name,
-                        average: averageMark,
-                    })
-                } else {
-                    let averageMark = studentsScore.get(studentId)[0].score;
-                    studAverage.push({
-                        id: studentId,
-                        name: currentStudent.name,
-                        average: averageMark
-                    })
-                }
-            });
+            return module.exports.countStudentsMark(studentsScore, requiredStudents)
         } catch (e) {
             console.error(e)
         }
-
+    },
+    validateClassroomId(classroomId) {
+        if (typeof classroomId === "undefined") {
+            throw new Error('You did not input anything')
+        }
+        if (typeof classroomId !== "number") {
+            throw TypeError(`Classroom ID should be number`)
+        }
+    },
+    async fetchData() {
+        try {
+            return await axios.get(`http://localhost:3000/api/students`);
+        } catch (e) {
+            throw new Error('Не удалось получить данные с сервера')
+        }
+    },
+    async countStudentsMark(studentsScore, requiredStudents) {
+        let studAverage = [];
+        studentsScore.forEach(async (student, studentId) => {
+            let currentStudent = requiredStudents.find(student => student.id === studentId);
+            let averageMark = 0;
+            if (student.length > 1) {
+                student.forEach(course => {
+                    averageMark += course.score / student.length;
+                });
+                studAverage.push({
+                    id: studentId,
+                    name: currentStudent.name,
+                    average: averageMark,
+                })
+            } else {
+                let averageMark = studentsScore.get(studentId)[0].score;
+                studAverage.push({
+                    id: studentId,
+                    name: currentStudent.name,
+                    average: averageMark
+                })
+            }
+        });
         return studAverage
     }
 };
