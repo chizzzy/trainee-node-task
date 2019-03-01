@@ -6,6 +6,7 @@ const fs = require('fs');
 const getAverageWithPromises = require('./modules/get_average_with_promises');
 const getAverageWithAsync = require('./modules/get_average_with_async');
 const getAverageWithCallbacks = require('./modules/get_average_with_callbacks');
+const getAverageWithGenerator = require('./modules/get_average_with_generator');
 
 
 function readData() {
@@ -56,4 +57,6 @@ app.listen(3000, () => {
 //     error => console.error(error)
 // );
 // getAverageWithCallbacks.getStudentsAverageMark(68, res => console.log(res));
+getAverageWithGenerator.execute(getAverageWithGenerator.getStudentsAverageMark(75, result => console.log(result)));
+
 

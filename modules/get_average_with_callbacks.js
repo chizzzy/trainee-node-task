@@ -1,13 +1,5 @@
 const request = require('request');
 module.exports = {
-    validateClassroomId(classroomId) {
-        if (typeof classroomId === "undefined") {
-            throw new Error('You did not input anything')
-        }
-        if (typeof classroomId !== "number") {
-            throw TypeError('Classroom ID should be number')
-        }
-    },
     /**
      * Callback based function that validate provided classroomId,
      * fetches students data for that classroom and calculates average students score
@@ -67,5 +59,13 @@ module.exports = {
         request(`http://localhost:3000/api/evaluation/history/${student.id}`, {json: true}, (err, res, body) => {
             callback(body)
         })
+    },
+    validateClassroomId(classroomId) {
+        if (typeof classroomId === "undefined") {
+            throw new Error('You did not input anything')
+        }
+        if (typeof classroomId !== "number") {
+            throw TypeError('Classroom ID should be number')
+        }
     }
 };
