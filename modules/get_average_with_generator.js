@@ -32,7 +32,7 @@ fetchData() {
     try {
         return axios.get(`http://localhost:3000/api/students`);
     } catch (e) {
-        throw new Error('Не удалось получить данные с сервера')
+        throw new Error('Failed to get server data')
     }
 },
 
