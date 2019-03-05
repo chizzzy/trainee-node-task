@@ -14,7 +14,7 @@ module.exports = {
                     requiredStudents = students;
                     for (let i = 0; i < students.length; i++) {
                         let promise = new Promise(resolve => {
-                            axios.get(`http://localhost:3000/api/evaluation/history/${students[i].id}`).then(
+                            axios.get(`http://localhost:3000/api/evaluation/history?filter=studentId eq ${students[i].id}`).then(
                                 eval => {
                                     studentsScore.set(students[i].id, eval.data);
                                     resolve();

@@ -10,7 +10,7 @@ module.exports = {
             throw(`Unfortunately, classroom with id ${classroomId} does not exist`)
         }
         for (const student of requiredStudents) {
-            const studentEvaluation = yield axios.get(`http://localhost:3000/api/evaluation/history/${student.id}\``);
+            const studentEvaluation = yield axios.get(`http://localhost:3000/api/evaluation/history?filter=studentId eq${student.id}`);
             studentsScore.set(student.id, studentEvaluation.data);
         }
         try {

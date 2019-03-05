@@ -56,7 +56,7 @@ module.exports = {
         })
     },
     sendRequestToStudentsEvaluation(student, callback) {
-        request(`http://localhost:3000/api/evaluation/history/${student.id}`, {json: true}, (err, res, body) => {
+        request(`http://localhost:3000/api/evaluation/history?filter=studentId eq${student.id}`, {json: true}, (err, res, body) => {
             callback(body)
         })
     },

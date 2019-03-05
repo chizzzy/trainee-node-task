@@ -7,7 +7,7 @@ describe('getAverage function that uses yields', () => {
         '  { id: 2, name: \'Alex\', average: 58 },\n' +
         '  { id: 3, name: \'Andrei\', average: 89 } ]\n', done => {
         execute(getAverage(75, result => {
-            assert.deepEqual(result, [{id: 2, name: 'John', average: 82},
+            assert.deepEqual(result, [{id: 1, name: 'John', average: 82},
                 {id: 2, name: 'Alex', average: 58},
                 {id: 3, name: 'Andrei', average: 89}]);
             done();

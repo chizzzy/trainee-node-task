@@ -24,11 +24,15 @@ function getData() {
     return readData();
 }
 
-app.get('/api/evaluation/history/:studentId', (req, res) => {
+app.get('/api/evaluation/history', (req, res) => {
     const data = getData();
-    const evaluationOfStudent = data.evaluation.filter(evaluation => evaluation.studentId === parseInt(req.params.studentId));
-    if (!evaluationOfStudent) res.status(404).send('The evaluation of student with given ID was not found');
-    evaluationOfStudent.map(eval => delete eval.studentId);
+    if (Object.keys(req.query).length === 0) {
+        return res.send(data.evaluation);
+    }
+    const requiredStudentId = req.query.filter.match(/\d+/);
+    const evaluationOfStudent = data.evaluation.filter(evaluation => evaluation.studentId === parseInt(requiredStudentId[0]));
+    if (evaluationOfStudent.length === 0) return res.status(404).send('The evaluation of student with given ID was not found');
+    evaluationOfStudent.map(eval => delete eval.requiredStudentId);
     res.send(evaluationOfStudent)
 });
 
@@ -40,7 +44,6 @@ app.get('/api/students', (req, res) => {
 app.get('/api/courses', (req, res) => {
     const data = getData();
     if (Object.keys(req.query).length === 0) {
-        console.log('ura');
         return res.send(data.courses);
     }
     const requiredStudentId = req.query.filter.match(/\d+/);
