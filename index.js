@@ -37,11 +37,16 @@ app.get('/api/students', (req, res) => {
     return res.send(data.students);
 });
 
-app.get('/api/courses/:id', (req, res) => {
+app.get('/api/courses', (req, res) => {
     const data = getData();
-    const studentCourses = data.courses.filter(course => course.studentId === parseInt(req.params.id));
-    if (!studentCourses) res.status(404).send('The course with given ID was not found');
-    res.send(studentCourses);
+    if (Object.keys(req.query).length === 0) {
+        console.log('ura');
+        return res.send(data.courses);
+    }
+    const requiredStudentId = req.query.filter.match(/\d+/);
+    const studentsCourses = data.courses.filter(course => course.studentId === parseInt(requiredStudentId[0]));
+    if (studentsCourses.length === 0) return res.status(404).send('The course with given ID was not found');
+    res.send(studentsCourses)
 });
 
 app.listen(3000, () => {
@@ -57,6 +62,6 @@ app.listen(3000, () => {
 //     error => console.error(error)
 // );
 // getAverageWithCallbacks.getStudentsAverageMark(68, res => console.log(res));
-getAverageWithGenerator.execute(getAverageWithGenerator.getStudentsAverageMark(75, result => console.log(result)));
+// getAverageWithGenerator.execute(getAverageWithGenerator.getStudentsAverageMark(75, result => console.log(result)));
 
 
