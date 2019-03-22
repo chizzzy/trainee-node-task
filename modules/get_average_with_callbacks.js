@@ -1,36 +1,38 @@
 const request = require('request');
+const validateClassroomId = require('./validation').validateClassroomId;
+
 module.exports = {
     /**
      * Callback based function that validate provided classroomId,
      * fetches students data for that classroom and calculates average students score
      */
     getStudentsAverageMark(classroomId, callback) {
-        module.exports.validateClassroomId(classroomId);
-        let studAverage = [];
-        request('http://localhost:3000/api/students', {json: true}, (err, res, body) => {
+        validateClassroomId(classroomId);
+        let studentsAverage = [];
+        request('http://localhost:3000/api/students', {json: true}, (err, res, students) => {
             if (err) {
                 return console.log(err);
             }
-            const requiredStudents = body.filter(student => student['classroomId'] === classroomId);
-            if (requiredStudents.length === 0) {
+            const classroomStudents = students.filter(student => student['classroomId'] === classroomId);
+            if (classroomStudents.length === 0) {
                 throw new Error(`Unfortunately, classroom with id ${classroomId} does not exist`)
             }
-            module.exports.getStudentsEvaluation(requiredStudents, eval => {
-                eval.forEach((student, studentId) => {
-                    let currentStudent = requiredStudents.find(student => student.id === studentId);
+            module.exports.getStudentsEvaluation(classroomStudents, evaluation => {
+                evaluation.forEach((student, studentId) => {
+                    let currentStudent = classroomStudents.find(student => student.id === studentId);
                     let averageMark = 0;
                     if (student.length > 1) {
                         student.forEach(course => {
                             averageMark += course.score / student.length;
                         });
-                        studAverage.push({
+                        studentsAverage.push({
                             id: studentId,
                             name: currentStudent.name,
                             average: averageMark,
                         })
                     } else {
-                        let averageMark = eval.get(studentId)[0].score;
-                        studAverage.push({
+                        let averageMark = evaluation.get(studentId)[0].score;
+                        studentsAverage.push({
                             id: studentId,
                             name: currentStudent.name,
                             average: averageMark
@@ -38,18 +40,18 @@ module.exports = {
                     }
 
                 });
-                callback(studAverage)
+                callback(studentsAverage)
             });
         })
     },
-    getStudentsEvaluation(requiredStudents, callback) {
+    getStudentsEvaluation(classroomStudents, callback) {
         const studentsScore = new Map();
-        let itemProcessed = 0;
-        requiredStudents.forEach(student => {
+        let itemsProcessed = 0;
+        classroomStudents.forEach(student => {
             module.exports.sendRequestToStudentsEvaluation(student, (body) => {
                 studentsScore.set(student.id, body);
-                itemProcessed++;
-                if (itemProcessed === requiredStudents.length) {
+                itemsProcessed++;
+                if (itemsProcessed === classroomStudents.length) {
                     callback(studentsScore)
                 }
             })
@@ -60,12 +62,4 @@ module.exports = {
             callback(body)
         })
     },
-    validateClassroomId(classroomId) {
-        if (typeof classroomId === "undefined") {
-            throw new Error('You did not input anything')
-        }
-        if (typeof classroomId !== "number") {
-            throw TypeError('Classroom ID should be number')
-        }
-    }
 };

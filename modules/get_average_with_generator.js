@@ -1,32 +1,26 @@
 const axios = require('axios');
+const validateClassroomId = require('./validation').validateClassroomId;
+
 module.exports = {
     getStudentsAverageMark: function* (classroomId, callback) {
-        module.exports.validateClassroomId(classroomId);
+        validateClassroomId(classroomId);
         const studentsScore = new Map();
-        let requiredStudents;
+        let classroomStudents;
         const studentsData = yield module.exports.fetchData();
-        requiredStudents = studentsData.data.filter(student => student['classroomId'] === classroomId);
-        if (requiredStudents.length === 0) {
+        classroomStudents = studentsData.data.filter(student => student['classroomId'] === classroomId);
+        if (classroomStudents.length === 0) {
             throw(`Unfortunately, classroom with id ${classroomId} does not exist`)
         }
-        for (const student of requiredStudents) {
+        for (const student of classroomStudents) {
             const studentEvaluation = yield axios.get(`http://localhost:3000/api/evaluation/history?filter=studentId eq${student.id}`);
             studentsScore.set(student.id, studentEvaluation.data);
         }
         try {
-            return callback(module.exports.countStudentsMark(studentsScore, requiredStudents))
+            return callback(module.exports.countStudentsMark(studentsScore, classroomStudents))
         } catch (e) {
             console.error(e)
         }
     },
-    validateClassroomId(classroomId){
-    if (typeof classroomId === "undefined") {
-        throw new Error('You did not input anything')
-    }
-    if (typeof classroomId !== "number") {
-        throw TypeError(`Classroom ID should be number`)
-    }
-},
 
 fetchData() {
     try {
@@ -36,30 +30,30 @@ fetchData() {
     }
 },
 
-countStudentsMark(studentsScore, requiredStudents) {
-    let studAverage = [];
+countStudentsMark(studentsScore, classroomStudents) {
+    let studentsAverage = [];
     studentsScore.forEach((student, studentId) => {
-        let currentStudent = requiredStudents.find(student => student.id === studentId);
+        let currentStudent = classroomStudents.find(student => student.id === studentId);
         let averageMark = 0;
         if (student.length > 1) {
             student.forEach(course => {
                 averageMark += course.score / student.length;
             });
-            studAverage.push({
+            studentsAverage.push({
                 id: studentId,
                 name: currentStudent.name,
                 average: averageMark,
             })
         } else {
             let averageMark = studentsScore.get(studentId)[0].score;
-            studAverage.push({
+            studentsAverage.push({
                 id: studentId,
                 name: currentStudent.name,
                 average: averageMark
             })
         }
     });
-    return studAverage
+    return studentsAverage
 },
     execute(generator, yieldValue) {
     let next = generator.next(yieldValue);

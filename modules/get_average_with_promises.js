@@ -9,9 +9,9 @@ module.exports = {
             module.exports.validateClassroomId(classroomId).then(() => {
                 let studentsScore = new Map();
                 let allPromises = [];
-                let requiredStudents;
-                module.exports.getRequiredStudents(classroomId).then(students => {
-                    requiredStudents = students;
+                let classroomStudents;
+                module.exports.getClassroomStudents(classroomId).then(students => {
+                    classroomStudents = students;
                     for (let i = 0; i < students.length; i++) {
                         let promise = new Promise(resolve => {
                             axios.get(`http://localhost:3000/api/evaluation/history?filter=studentId eq ${students[i].id}`).then(
@@ -24,42 +24,42 @@ module.exports = {
                         allPromises.push(promise);
                     }
                 }).then(() => {
-                    return module.exports.countStudentsMarks(allPromises, studentsScore, requiredStudents).then(
-                        studAverage => resolve(studAverage)
+                    return module.exports.countStudentsMarks(allPromises, studentsScore, classroomStudents).then(
+                        studentsAverage => resolve(studentsAverage)
                     )
                 }).catch(err => console.error(err))
             }).catch(e => reject(e))
         })
     },
-    countStudentsMarks(allPromises, studentsScore, requiredStudents) {
-        let studAverage = [];
+    countStudentsMarks(allPromises, studentsScore, classroomStudents) {
+        let studentsAverage = [];
         return new Promise((resolve, reject) => {
             Promise.all(allPromises).then(() => {
                 studentsScore.forEach((student, studentId) => {
-                    let currentStudent = requiredStudents.find(student => student.id === studentId);
+                    let currentStudent = classroomStudents.find(student => student.id === studentId);
                     let averageMark = 0;
                     if (student.length > 1) {
                         student.forEach((course) => {
                             averageMark += course.score / student.length;
                         });
-                        studAverage.push({
+                        studentsAverage.push({
                             id: studentId,
                             name: currentStudent.name,
                             average: averageMark,
                         })
                     } else {
                         let averageMark = studentsScore.get(studentId)[0].score;
-                        studAverage.push({
+                        studentsAverage.push({
                             id: studentId,
                             name: currentStudent.name,
                             average: averageMark
                         })
                     }
                 })
-            }).then(() => resolve(studAverage))
+            }).then(() => resolve(studentsAverage))
         })
     },
-    getRequiredStudents(classroomId) {
+    getClassroomStudents(classroomId) {
         return new Promise((resolve, reject) => {
             let students = [];
             axios.get(`http://localhost:3000/api/students`)
