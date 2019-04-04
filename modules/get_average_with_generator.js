@@ -2,6 +2,10 @@ const axios = require('axios');
 const validateClassroomId = require('./validation').validateClassroomId;
 
 module.exports = {
+    /**
+     * Generator based function that validate provided classroomId,
+     * fetches students data for that classroom and calculates average students score
+     */
     getStudentsAverageMark: function* (classroomId, callback) {
         validateClassroomId(classroomId);
         const studentsScore = new Map();
